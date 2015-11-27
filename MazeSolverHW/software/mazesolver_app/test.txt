@@ -1,0 +1,1 @@
+This is text stored in a file.
