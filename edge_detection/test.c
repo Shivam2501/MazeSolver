@@ -36,7 +36,7 @@ void gaussian_blur(int width, int height, unsigned char * inimg, unsigned char *
             pixval = 0.0;
             for (j = -1; j <= 1; j++) {
                 for (i = -1; i <= 1; i++) {
-                    pixval += (unsigned int)kernel[i+1][j+1] * inimg[coords(x+i,y+j,width,height)];
+                    pixval += kernel[i+1][j+1] * inimg[coords(x+i,y+j,width,height)];
                 }
             }
             
@@ -69,7 +69,8 @@ void sobel_filtering(int width, int height, unsigned char * inimg, unsigned char
                 continue;
             }
           
-            G_x = G_y = 0.0;
+            G_x = 0.0;
+            G_y = 0.0;
             G = 0.0;
             for (j = -1; j <= 1; j++) {
                 for (i = -1; i <= 1; i++) {
@@ -85,8 +86,8 @@ void sobel_filtering(int width, int height, unsigned char * inimg, unsigned char
     }
 }
 
-int blocksize(int width, int height, unsigned char *inimg, int start_x, int start_y, int maze_size){
-
+int blocksize(int width, int height, unsigned char *inimg, int start_x, int start_y, int maze_size)
+{
     int i, j;
     int counter_w, counter_tot;
     int left_coord, right_coord;
@@ -95,13 +96,16 @@ int blocksize(int width, int height, unsigned char *inimg, int start_x, int star
     //check left boundary
     counter_w = 0;
     counter_tot = 10;
-    for(i=0;i<width;i++){
-        if(inimg[coords(i,height/2,width,height)]>(unsigned char)150 && counter_tot>0){
+    for(i = 0; i < width; i++)
+    {
+        if(inimg[coords(i,height/2,width,height)] > (unsigned char)150 && counter_tot > 0)
+        {
             counter_w++;
-            if(counter_w==5)
+            if(counter_w==4)
                 break;
         }
-        else if(inimg[coords(i,height/2,width,height)]>(unsigned char)150 && counter_tot<=0){
+        else if(inimg[coords(i,height/2,width,height)] > (unsigned char)150 && counter_tot <= 0)
+        {
             counter_tot = 10;
             counter_w = 0;
             counter_w++;
@@ -110,31 +114,35 @@ int blocksize(int width, int height, unsigned char *inimg, int start_x, int star
     }   
     left_coord = i-counter_tot;
 
-     //check right boundary
+    //check right boundary
     counter_w = 0;
     counter_tot = 10;
-    for(i=width-1;i>=0;i--){
-        if(inimg[coords(i,height/2,width,height)]>(unsigned char)150 && counter_tot>0){
+    for(i = width-1; i >= 0; i--)
+    {
+        if(inimg[coords(i,height/2,width,height)] > (unsigned char)150 && counter_tot > 0)
+        {
             counter_w++;
-            if(counter_w==5)
+            if(counter_w==4)
                 break;
         }
-        else if(inimg[coords(i,height/2,width,height)]>(unsigned char)150 && counter_tot<=0){
+        else if(inimg[coords(i,height/2,width,height)] > (unsigned char)150 && counter_tot <= 0)
+        {
             counter_tot = 10;
             counter_w = 0;
             counter_w++;
         }
         counter_tot--;
     }   
-    right_coord = i+counter_tot;
+    right_coord = i + counter_tot;
 
-    block_size = (right_coord-left_coord)/maze_size;
+    block_size = (right_coord-left_coord) / maze_size;
 
     return block_size;
-
 }
 
-int dfs(int width, int height, unsigned char *inimg, int x_new, int y_new, int x_prev, int y_prev, int block_size, unsigned char * output, int size){
+int dfs(int width, int height, unsigned char * inimg, int x_new, int y_new,
+        int x_prev, int y_prev, int block_size, unsigned char * output, int * size)
+{
 
     //check if it reaches x boundary on the right
     if(x_new>=width-1){
@@ -386,32 +394,41 @@ int dfs(int width, int height, unsigned char *inimg, int x_new, int y_new, int x
 
     //go left
     if(dfs(width,height,inimg, x_new-block_size, y_new, x_new, y_new, block_size, output, size)==1){
-        printf("Left\n");
-        output[size]='L';
+        *size = *size + 1;
+        //printf("Left\n");
+        printf("(%d,%d)\n", x_new, y_new);
+        output[*size]='L';
         return 1;
     }
         
     //go right
     if(dfs(width,height,inimg, x_new+block_size, y_new, x_new, y_new, block_size, output, size)==1){
-        printf("Right\n");
-        output[size]='R';
+        *size = *size + 1;
+        //printf("Right\n");
+        printf("(%d,%d)\n", x_new, y_new);
+        output[*size]='R';
         return 1;
     }
 
     //go up
     if(dfs(width,height,inimg, x_new, y_new-block_size, x_new, y_new, block_size, output, size)==1){
-        printf("Up\n");
-        output[size]='U';
+        *size = *size + 1;
+        //printf("Up\n");
+        printf("(%d,%d)\n", x_new, y_new);
+        output[*size]='U';
         return 1;
     }
 
     //go down
     if(dfs(width,height,inimg, x_new, y_new+block_size, x_new, y_new, block_size, output, size)==1){
-        printf("Down\n");
-        output[size]='D';
+        *size = *size + 1;
+        //printf("Down\n");
+        printf("(%d,%d)\n", x_new, y_new);
+        output[*size]='D';
         return 1;
     }
 
+    printf("couldnt solve...");
     return 0;
 
 }
@@ -424,7 +441,7 @@ int main(void)
 	unsigned char* png;
 	size_t pngsize;
 	LodePNGState state;
-	char filename[] = "handmaze.png";  /* NAME OF INPUT IMAGE */
+	char filename[] = "comp_maze.png";  /* NAME OF INPUT IMAGE */
 
 	lodepng_state_init(&state);
 	/*optionally customize the state*/
@@ -442,28 +459,45 @@ int main(void)
     //FILE * fp;
     //fp = fopen("imgout.txt", "w");
     //fp = fopen("imgout.ram", "wb");
-    int i,x,y;
+    //int i,x,y;
     //char * ramimg = (char*) calloc(2*width*height, sizeof(char));
     //for(i = 0; i < 2*width*height; i++){
         //fprintf(fp, "%d (%d,%d)=%d\n", i, i%width, i/width, image[i]);
-        //if(i%2 == 0)
-        //    ramimg[i] = image[i/2];
-        //else
-        //    ramimg[i] = 0;
+    //    if(i%2 == 0)
+    //        ramimg[i] = image[i/2];
+    //    else
+    //        ramimg[i] = 0;
     //}
     //fwrite(ramimg, sizeof(unsigned char), 2*width*height, fp);
     //free(ramimg);
+    //fclose(fp);
     //for(y = 0; y < height; y++) {
     //    for(x = 0; x < width; x++) {
     //        fprintf(fp, "(%d,%d)=%d\n", x, y, image[coords(x,y,width,height)]);
     //    }
     //}
-    //fclose(fp);
-	unsigned char * gaussimg = (unsigned char*) calloc(width*height, sizeof(char));
+	
+    unsigned char * gaussimg = (unsigned char*) calloc(width*height, sizeof(char));
 	unsigned char * outimg = (unsigned char*) calloc(width*height, sizeof(char));
-	//sobel_filtering(width, height, image, outimg);
     gaussian_blur(width, height, image, gaussimg);
-    sobel_filtering(width, height, gaussimg, outimg);
+	sobel_filtering(width, height, gaussimg, outimg);
+    
+    int block_size =37;//= blocksize(width, height, image, 519, 439, 12);
+    printf("blocksize = %d\n", block_size);
+    
+    int solver;
+    unsigned char path[144];
+    int * size;
+    *size = 0;
+    solver = dfs(width,height,image, 334, 404, 334, 404, block_size, path, size);
+    
+    printf("size = %d\n", *size);
+    int i1;
+    for(i1 = *size-1; i1 >= 0; i1--)
+    {
+        printf("%c\n", path[i1]);
+    }
+    
     //int x, y;
     //for(x = 0; x < width; x++)
     //{
@@ -472,17 +506,7 @@ int main(void)
     //        outimg[coords(x,y,width,height)] = image[coords(x,y,width,height)];
     //    }
     //}
-    int block_size;
-	block_size=blocksize(width, height, image, 141, 425, 7);
-
-    int solver;
-    unsigned char path[14];
-    solver=dfs(width,height,image, 141, 425, 141, 425, block_size, path, 0);
-
-    int i1;
-    for(i1=0;i1<14;i1++){
-        printf("%c\n", path[i1]);
-    }
+	
 	unsigned char* outpng;
 	error = lodepng_encode(&outpng, &pngsize, outimg, width, height, &state);
 	if(!error) lodepng_save_file(outpng, pngsize, "sobel.png");  /* NAME OF OUTPUT IMAGE */
