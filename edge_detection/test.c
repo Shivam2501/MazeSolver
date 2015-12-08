@@ -100,8 +100,11 @@ int blocksize(int width, int height, unsigned char *inimg, int start_x, int star
     {
         if(inimg[coords(i,height/2,width,height)] > (unsigned char)150 && counter_tot > 0)
         {
+            if(counter_w==0){
+                    counter_tot=10;
+                }
             counter_w++;
-            if(counter_w==4)
+            if(counter_w==3)
                 break;
         }
         else if(inimg[coords(i,height/2,width,height)] > (unsigned char)150 && counter_tot <= 0)
@@ -121,8 +124,11 @@ int blocksize(int width, int height, unsigned char *inimg, int start_x, int star
     {
         if(inimg[coords(i,height/2,width,height)] > (unsigned char)150 && counter_tot > 0)
         {
+            if(counter_w==0){
+                    counter_tot=10;
+                }
             counter_w++;
-            if(counter_w==4)
+            if(counter_w==3)
                 break;
         }
         else if(inimg[coords(i,height/2,width,height)] > (unsigned char)150 && counter_tot <= 0)
@@ -153,6 +159,9 @@ int dfs(int width, int height, unsigned char * inimg, int x_new, int y_new,
         counter_tot = 15;
         for(i=x_prev;i<width;i++){
             if(inimg[coords(i,y_new,width,height)]>(unsigned char)150 && counter_tot>0){
+                if(counter_w==0){
+                    counter_tot=15;
+                }
                 counter_w++;
             }
             else if(inimg[coords(i,y_new,width,height)]>(unsigned char)150 && counter_tot<=0){
@@ -178,6 +187,9 @@ int dfs(int width, int height, unsigned char * inimg, int x_new, int y_new,
         counter_tot = 15;
         for(i=x_prev;i>=0;i--){
             if(inimg[coords(i,y_new,width,height)]>(unsigned char)150 && counter_tot>0){
+                if(counter_w==0){
+                    counter_tot=15;
+                }
                 counter_w++;
             }
             else if(inimg[coords(i,y_new,width,height)]>(unsigned char)150 && counter_tot<=0){
@@ -203,6 +215,9 @@ int dfs(int width, int height, unsigned char * inimg, int x_new, int y_new,
         counter_tot = 15;
         for(i=y_prev;i>=0;i--){
             if(inimg[coords(x_new,i,width,height)]>(unsigned char)150 && counter_tot>0){
+                if(counter_w==0){
+                    counter_tot=15;
+                }
                 counter_w++;
             }
             else if(inimg[coords(x_new,i,width,height)]>(unsigned char)150 && counter_tot<=0){
@@ -228,6 +243,9 @@ int dfs(int width, int height, unsigned char * inimg, int x_new, int y_new,
         counter_tot = 15;
         for(i=y_prev;i<height;i++){
             if(inimg[coords(x_new,i,width,height)]>(unsigned char)150 && counter_tot>0){
+                if(counter_w==0){
+                    counter_tot=15;
+                }
                 counter_w++;
             }
             else if(inimg[coords(x_new,i,width,height)]>(unsigned char)150 && counter_tot<=0){
@@ -254,6 +272,9 @@ int dfs(int width, int height, unsigned char * inimg, int x_new, int y_new,
         counter_visited = 0;
         for(i=x_prev;i>=x_new;i--){
             if(inimg[coords(i,y_new,width,height)]>(unsigned char)150 && counter_tot>0){
+                if(counter_w==0){
+                    counter_tot=15;
+                }
                 counter_w++;
             }
             else if(inimg[coords(i,y_new,width,height)]>(unsigned char)150 && counter_tot<=0){
@@ -291,6 +312,9 @@ int dfs(int width, int height, unsigned char * inimg, int x_new, int y_new,
         counter_visited = 0;
         for(i=x_prev;i<=x_new;i++){
             if(inimg[coords(i,y_new,width,height)]>(unsigned char)150 && counter_tot>0){
+                if(counter_w==0){
+                    counter_tot=15;
+                }
                 counter_w++;
             }
             else if(inimg[coords(i,y_new,width,height)]>(unsigned char)150 && counter_tot<=0){
@@ -328,12 +352,16 @@ int dfs(int width, int height, unsigned char * inimg, int x_new, int y_new,
         counter_visited = 0;
         for(i=y_prev;i>=y_new;i--){
             if(inimg[coords(x_new,i,width,height)]>(unsigned char)150 && counter_tot>0){
+                if(counter_w==0){
+                    counter_tot=15;
+                }
                 counter_w++;
             }
             else if(inimg[coords(x_new,i,width,height)]>(unsigned char)150 && counter_tot<=0){
                 counter_tot = 15;
                 counter_w = 0;
                 counter_w++;
+                printf("%d\n", counter_w);
             }
             counter_tot--;
             if(inimg[coords(x_new,i,width,height)]==100){
@@ -365,6 +393,9 @@ int dfs(int width, int height, unsigned char * inimg, int x_new, int y_new,
         counter_visited = 0;
         for(i=y_prev;i<=y_new;i++){
             if(inimg[coords(x_new,i,width,height)]>(unsigned char)150 && counter_tot>0){
+                if(counter_w==0){
+                    counter_tot=15;
+                }
                 counter_w++;
             }
             else if(inimg[coords(x_new,i,width,height)]>(unsigned char)150 && counter_tot<=0){
@@ -395,8 +426,8 @@ int dfs(int width, int height, unsigned char * inimg, int x_new, int y_new,
     //go left
     if(dfs(width,height,inimg, x_new-block_size, y_new, x_new, y_new, block_size, output, size)==1){
         *size = *size + 1;
-        //printf("Left\n");
-        printf("(%d,%d)\n", x_new, y_new);
+        printf("Left\n");
+        //printf("(%d,%d)\n", x_new, y_new);
         output[*size]='L';
         return 1;
     }
@@ -404,8 +435,8 @@ int dfs(int width, int height, unsigned char * inimg, int x_new, int y_new,
     //go right
     if(dfs(width,height,inimg, x_new+block_size, y_new, x_new, y_new, block_size, output, size)==1){
         *size = *size + 1;
-        //printf("Right\n");
-        printf("(%d,%d)\n", x_new, y_new);
+        printf("Right\n");
+        //printf("(%d,%d)\n", x_new, y_new);
         output[*size]='R';
         return 1;
     }
@@ -413,8 +444,8 @@ int dfs(int width, int height, unsigned char * inimg, int x_new, int y_new,
     //go up
     if(dfs(width,height,inimg, x_new, y_new-block_size, x_new, y_new, block_size, output, size)==1){
         *size = *size + 1;
-        //printf("Up\n");
-        printf("(%d,%d)\n", x_new, y_new);
+        printf("Up\n");
+        //printf("(%d,%d)\n", x_new, y_new);
         output[*size]='U';
         return 1;
     }
@@ -422,8 +453,8 @@ int dfs(int width, int height, unsigned char * inimg, int x_new, int y_new,
     //go down
     if(dfs(width,height,inimg, x_new, y_new+block_size, x_new, y_new, block_size, output, size)==1){
         *size = *size + 1;
-        //printf("Down\n");
-        printf("(%d,%d)\n", x_new, y_new);
+        printf("Down\n");
+        //printf("(%d,%d)\n", x_new, y_new);
         output[*size]='D';
         return 1;
     }
@@ -482,16 +513,17 @@ int main(void)
     gaussian_blur(width, height, image, gaussimg);
 	sobel_filtering(width, height, gaussimg, outimg);
     
-    int block_size =37;//= blocksize(width, height, image, 519, 439, 12);
+    int block_size =blocksize(width, height, image, 519, 439, 12);
     printf("blocksize = %d\n", block_size);
     
     int solver;
     unsigned char path[144];
-    int * size;
+    int *size=(int *) malloc(1);
     *size = 0;
+
     solver = dfs(width,height,image, 334, 404, 334, 404, block_size, path, size);
     
-    printf("size = %d\n", *size);
+    //printf("size = %d\n", *size);
     int i1;
     for(i1 = *size-1; i1 >= 0; i1--)
     {
