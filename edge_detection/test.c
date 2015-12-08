@@ -426,7 +426,7 @@ int dfs(int width, int height, unsigned char * inimg, int x_new, int y_new,
     //go left
     if(dfs(width,height,inimg, x_new-block_size, y_new, x_new, y_new, block_size, output, size)==1){
         *size = *size + 1;
-        printf("Left\n");
+        //printf("Left\n");
         //printf("(%d,%d)\n", x_new, y_new);
         output[*size]='L';
         return 1;
@@ -435,7 +435,7 @@ int dfs(int width, int height, unsigned char * inimg, int x_new, int y_new,
     //go right
     if(dfs(width,height,inimg, x_new+block_size, y_new, x_new, y_new, block_size, output, size)==1){
         *size = *size + 1;
-        printf("Right\n");
+        //printf("Right\n");
         //printf("(%d,%d)\n", x_new, y_new);
         output[*size]='R';
         return 1;
@@ -444,7 +444,7 @@ int dfs(int width, int height, unsigned char * inimg, int x_new, int y_new,
     //go up
     if(dfs(width,height,inimg, x_new, y_new-block_size, x_new, y_new, block_size, output, size)==1){
         *size = *size + 1;
-        printf("Up\n");
+        //printf("Up\n");
         //printf("(%d,%d)\n", x_new, y_new);
         output[*size]='U';
         return 1;
@@ -453,13 +453,13 @@ int dfs(int width, int height, unsigned char * inimg, int x_new, int y_new,
     //go down
     if(dfs(width,height,inimg, x_new, y_new+block_size, x_new, y_new, block_size, output, size)==1){
         *size = *size + 1;
-        printf("Down\n");
+        //printf("Down\n");
         //printf("(%d,%d)\n", x_new, y_new);
         output[*size]='D';
         return 1;
     }
 
-    printf("couldnt solve...");
+    //printf("couldnt solve...");
     return 0;
 
 }
@@ -485,7 +485,7 @@ int main(void)
 	free(png);
 
 	/*use image here*/
-	printf("Width=%d Height=%d\n", width, height);
+	//printf("Width=%d Height=%d\n", width, height);
     
     //FILE * fp;
     //fp = fopen("imgout.txt", "w");
@@ -514,18 +514,18 @@ int main(void)
 	sobel_filtering(width, height, gaussimg, outimg);
     
     int block_size =blocksize(width, height, image, 519, 439, 12);
-    printf("blocksize = %d\n", block_size);
+    //printf("blocksize = %d\n", block_size);
     
     int solver;
     unsigned char path[144];
-    int *size=(int *) malloc(1);
+    int *size=(int *) malloc(sizeof(int));
     *size = 0;
 
     solver = dfs(width,height,image, 334, 404, 334, 404, block_size, path, size);
     
     //printf("size = %d\n", *size);
     int i1;
-    for(i1 = *size-1; i1 >= 0; i1--)
+    for(i1 = *size; i1 >= 0; i1--)
     {
         printf("%c\n", path[i1]);
     }
