@@ -164,14 +164,14 @@ int blocksize(int width, int height, unsigned char *inimg, int * start_x, int * 
         counter_tot--;
     }   
     top_coord = i - counter_tot;
-    printf("%d\n", top_coord);
+    //printf("%d\n", top_coord);
     *right_cd = right_coord;
     block_size = (right_coord-left_coord) / maze_size;
-    printf("%d\n", block_size);
+    //printf("%d\n", block_size);
     
     *start_y = ((block_size*index1)+top_coord)-(block_size/2);
     *start_x = ((block_size*index2)+left_coord)-(block_size/2);
-    printf("%d %d\n", *start_x, *start_y);
+    //printf("%d %d\n", *start_x, *start_y);
     return block_size;
 }
 
