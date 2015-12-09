@@ -86,11 +86,11 @@ void sobel_filtering(int width, int height, unsigned char * inimg, unsigned char
     }
 }
 
-int blocksize(int width, int height, unsigned char *inimg, int start_x, int start_y, int maze_size)
+int blocksize(int width, int height, unsigned char *inimg, int * start_x, int * start_y, int maze_size, int * right_cd, int index1, int index2)
 {
     int i, j;
     int counter_w, counter_tot;
-    int left_coord, right_coord;
+    int left_coord, right_coord, top_coord;
     int block_size;
 
     //check left boundary
@@ -141,8 +141,37 @@ int blocksize(int width, int height, unsigned char *inimg, int start_x, int star
     }   
     right_coord = i + counter_tot;
 
+    //check top boundary
+    counter_w = 0;
+    counter_tot = 10;
+    for(i = 0; i <height; i++)
+    {
+        if(inimg[coords(width/2,i,width,height)] > (unsigned char)150 && counter_tot > 0)
+        {
+            if(counter_w==0){
+                    counter_tot=10;
+                }
+            counter_w++;
+            if(counter_w==3)
+                break;
+        }
+        else if(inimg[coords(width/2,i,width,height)] > (unsigned char)150 && counter_tot <= 0)
+        {
+            counter_tot = 10;
+            counter_w = 0;
+            counter_w++;
+        }
+        counter_tot--;
+    }   
+    top_coord = i - counter_tot;
+    printf("%d\n", top_coord);
+    *right_cd = right_coord;
     block_size = (right_coord-left_coord) / maze_size;
-
+    printf("%d\n", block_size);
+    
+    *start_y = ((block_size*index1)+top_coord)-(block_size/2);
+    *start_x = ((block_size*index2)+left_coord)-(block_size/2);
+    printf("%d %d\n", *start_x, *start_y);
     return block_size;
 }
 
@@ -361,7 +390,7 @@ int dfs(int width, int height, unsigned char * inimg, int x_new, int y_new,
                 counter_tot = 15;
                 counter_w = 0;
                 counter_w++;
-                printf("%d\n", counter_w);
+                //printf("%d\n", counter_w);
             }
             counter_tot--;
             if(inimg[coords(x_new,i,width,height)]==100){
@@ -513,7 +542,8 @@ int main(void)
     gaussian_blur(width, height, image, gaussimg);
 	sobel_filtering(width, height, gaussimg, outimg);
     
-    int block_size =blocksize(width, height, image, 519, 439, 12);
+    int right_coord, startx, starty, index1=11, index2=7;
+    int block_size =blocksize(width, height, image, &startx, &starty, 12, &right_coord, index1, index2);
     //printf("blocksize = %d\n", block_size);
     
     int solver;
@@ -521,7 +551,7 @@ int main(void)
     int *size=(int *) malloc(sizeof(int));
     *size = 0;
 
-    solver = dfs(width,height,image, 334, 404, 334, 404, block_size, path, size);
+    solver = dfs(width,height,image, startx, starty, startx, starty, block_size, path, size);
     
     //printf("size = %d\n", *size);
     int i1;
