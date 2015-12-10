@@ -9,7 +9,7 @@
 
 size_t coords(int x, int y, int width, int height)
 {
-	//return x*height + y;
+    //return x*height + y;
     return y*width + x;
 }
 
@@ -292,44 +292,44 @@ int dfs(int width, int height, unsigned char * inimg, int x_new, int y_new,
     }
 
     //check if it can go left
-    if(x_new<x_prev){
-        int i;
-        int counter_w, counter_tot, counter_visited;
-        //printf("\n\n%d, %d, %d, %d", x_new, x_prev, y_new, y_prev);
-        counter_w = 0;
-        counter_tot = 15;
-        counter_visited = 0;
-        for(i=x_prev;i>=x_new;i--){
-            if(inimg[coords(i,y_new,width,height)]>(unsigned char)150 && counter_tot>0){
-                if(counter_w==0){
-                    counter_tot=15;
-                }
-                counter_w++;
-            }
-            else if(inimg[coords(i,y_new,width,height)]>(unsigned char)150 && counter_tot<=0){
-                counter_tot = 15;
-                counter_w = 0;
-                counter_w++;
-            }
-            counter_tot--;
-            if(inimg[coords(i,y_new,width,height)]==100){
-                counter_visited++;
-                if(counter_visited>5){
-                    return 0;
-                }
-            }
-            //printf(", %d", inimg[coords(i,y_new,width,height)]); 
-        }
-        if(counter_w<3){
-            //printf("Left");
+        if(x_new<x_prev){
+            int i;
+            int counter_w, counter_tot, counter_visited;
+            //printf("\n\n%d, %d, %d, %d", x_new, x_prev, y_new, y_prev);
+            counter_w = 0;
+            counter_tot = 15;
+            counter_visited = 0;
             for(i=x_prev;i>=x_new;i--){
-                if(inimg[coords(i,y_new,width,height)]<(unsigned char)150)
-                    inimg[coords(i,y_new,width,height)]=100;  //mark as visited
+                if(inimg[coords(i,y_new,width,height)]>(unsigned char)150 && counter_tot>0){
+                    if(counter_w==0){
+                        counter_tot=15;
+                    }
+                    counter_w++;
+                }
+                else if(inimg[coords(i,y_new,width,height)]>(unsigned char)150 && counter_tot<=0){
+                    counter_tot = 15;
+                    counter_w = 0;
+                    counter_w++;
+                }
+                counter_tot--;
+                if(inimg[coords(i,y_new,width,height)]==100){
+                    counter_visited++;
+                    if(counter_visited>5){
+                        return 0;
+                    }
+                }
+                //printf(", %d", inimg[coords(i,y_new,width,height)]); 
             }
+            if(counter_w<3){
+                //printf("Left");
+                for(i=x_prev;i>=x_new;i--){
+                    if(inimg[coords(i,y_new,width,height)]<(unsigned char)150)
+                        inimg[coords(i,y_new,width,height)]=100;  //mark as visited
+                }
+            }
+            else
+                return 0;
         }
-        else
-            return 0;
-    }
 
     //check if it can go right
     if(x_new>x_prev){
@@ -495,26 +495,26 @@ int dfs(int width, int height, unsigned char * inimg, int x_new, int y_new,
 
 int main(void)
 {
-	unsigned error;
-	unsigned char* image;
-	unsigned width, height;
-	unsigned char* png;
-	size_t pngsize;
-	LodePNGState state;
-	char filename[] = "comp_maze.png";  /* NAME OF INPUT IMAGE */
+    unsigned error;
+    unsigned char* image;
+    unsigned width, height;
+    unsigned char* png;
+    size_t pngsize;
+    LodePNGState state;
+    char filename[] = "handmaze.png";  /* NAME OF INPUT IMAGE */
 
-	lodepng_state_init(&state);
-	/*optionally customize the state*/
-	state.info_raw.colortype = LCT_GREY;
+    lodepng_state_init(&state);
+    /*optionally customize the state*/
+    state.info_raw.colortype = LCT_GREY;
 
-	lodepng_load_file(&png, &pngsize, filename);
-	error = lodepng_decode(&image, &width, &height, &state, png, pngsize);
-	if(error) printf("error %u: %s\n", error, lodepng_error_text(error));
+    lodepng_load_file(&png, &pngsize, filename);
+    error = lodepng_decode(&image, &width, &height, &state, png, pngsize);
+    if(error) printf("error %u: %s\n", error, lodepng_error_text(error));
 
-	free(png);
+    free(png);
 
-	/*use image here*/
-	//printf("Width=%d Height=%d\n", width, height);
+    /*use image here*/
+    //printf("Width=%d Height=%d\n", width, height);
     
     //FILE * fp;
     //fp = fopen("imgout.txt", "w");
@@ -536,14 +536,14 @@ int main(void)
     //        fprintf(fp, "(%d,%d)=%d\n", x, y, image[coords(x,y,width,height)]);
     //    }
     //}
-	
-    unsigned char * gaussimg = (unsigned char*) calloc(width*height, sizeof(char));
-	unsigned char * outimg = (unsigned char*) calloc(width*height, sizeof(char));
-    gaussian_blur(width, height, image, gaussimg);
-	sobel_filtering(width, height, gaussimg, outimg);
     
-    int right_coord, startx, starty, index1=11, index2=7;
-    int block_size =blocksize(width, height, image, &startx, &starty, 12, &right_coord, index1, index2);
+    unsigned char * gaussimg = (unsigned char*) calloc(width*height, sizeof(char));
+    unsigned char * outimg = (unsigned char*) calloc(width*height, sizeof(char));
+    gaussian_blur(width, height, image, gaussimg);
+    sobel_filtering(width, height, gaussimg, outimg);
+    
+    int right_coord, startx, starty, index1=6, index2=5;
+    int block_size =blocksize(width, height, image, &startx, &starty, 7, &right_coord, index1, index2);
     //printf("blocksize = %d\n", block_size);
     
     int solver;
@@ -568,18 +568,18 @@ int main(void)
     //        outimg[coords(x,y,width,height)] = image[coords(x,y,width,height)];
     //    }
     //}
-	
-	unsigned char* outpng;
-	error = lodepng_encode(&outpng, &pngsize, outimg, width, height, &state);
-	if(!error) lodepng_save_file(outpng, pngsize, "sobel.png");  /* NAME OF OUTPUT IMAGE */
-	if(error) printf("error %u: %s\n", error, lodepng_error_text(error));
-	
+    
+    unsigned char* outpng;
+    error = lodepng_encode(&outpng, &pngsize, outimg, width, height, &state);
+    if(!error) lodepng_save_file(outpng, pngsize, "sobel.png");  /* NAME OF OUTPUT IMAGE */
+    if(error) printf("error %u: %s\n", error, lodepng_error_text(error));
     
     
-	/* CLEANUP */
-	lodepng_state_cleanup(&state);
-	free(image);
-	free(outimg);
-	
-	return 0;
+    
+    /* CLEANUP */
+    lodepng_state_cleanup(&state);
+    free(image);
+    free(outimg);
+    
+    return 0;
 }
