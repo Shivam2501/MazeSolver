@@ -1,1 +1,3 @@
 # MazeSolver
+
+Final project for UIUC's Digital Systems Lab (ECE 385) class. We designed a maze solving system on the NIOS II processor running on the Altera DE2-115 FPGA Kit. A regular webcam on a computer takes an input image of the maze, which is fed to the Altera FPGA's NIOS II processor through a USB-JTAG interface. The FPGA then runs a Sobel operator edge-detection algorithm, to find the walls of the maze in the inputted image. It then proceeds to find an optimal solution to the maze using Depth-First-Search. This solution is then displayed on the screen through the VGA controller by progressively printing a path from the start to the finish.
